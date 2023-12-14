@@ -1,86 +1,118 @@
 use std::collections::VecDeque;
-use std::collections::HashMap;
 
-pub fn seperate_vector(vector: Vec<(usize, usize)>) -> (Vec<usize>, Vec<usize>) {
-    let mut nodes: Vec<usize> = Vec::new();
-    let mut edges: Vec<usize> = Vec::new();
-    for (node, edge) in vector {
-        nodes.push(node);
-        edges.push(edge);
-    }
-    return (nodes, edges)
-}
+// pub fn seperate_vector(vector: Vec<(usize, usize)>) -> (Vec<usize>, Vec<usize>) {
+//     let mut nodes: Vec<usize> = Vec::new();
+//     let mut edges: Vec<usize> = Vec::new();
+//     for (node, edge) in vector {
+//         nodes.push(node);
+//         edges.push(edge);
+//     }
+//     return (nodes, edges)
+// }
 
 pub fn create_adjacency_list(graph: Vec<(usize, usize)>) -> Vec<Vec<usize>> {
     let length = graph.iter().map(|&(node, edge)| node.max(edge)).max().unwrap_or(0) + 1; //Used the internet to get the correct length
-    let mut AdjacencyLists : Vec<Vec<usize>> = vec![vec![];length];
+    let mut Adj : Vec<Vec<usize>> = vec![vec![];length];
 
     for &(node, edge) in &graph {
-        AdjacencyLists[node].push(edge);
-        AdjacencyLists[edge].push(node);  
+        Adj[node].push(edge);
+        Adj[edge].push(node);  
     }
-
-    return AdjacencyLists
+    return Adj
 }
 
-
-pub fn compute_print_all_BFS(start: usize, adjacency_lists: &Vec<Vec<usize>>) {
-    let mut distance: Vec<Option<u32>> = vec![None; adjacency_lists.len()];
-    distance[start] = Some(0); // <= we know this distance
-    let mut queue: VecDeque<usize> = VecDeque::new();
-    queue.push_back(start);
-
-    while let Some(v) = queue.pop_front() {
-        // new unprocessed vertex
-        for &u in &adjacency_lists[v] {
-            if distance[u].is_none() {
-                // consider all unprocessed neighbors of v
-                distance[u] = Some(distance[v].unwrap() + 1);
-                queue.push_back(u);
-            }
-        }
-    }
-
-    print!("vertex:distance");
-    for v in 0..adjacency_lists.len() {
-        print!(" {}:{} ", v, distance[v].unwrap());
-    }
-    println!();
-}
-
-pub fn computeBFS(start: usize, adjacency_lists: &Vec<Vec<usize>>) -> Vec<Vec<Option<u32>>> {
+//This function computes a BFS for each node in the graph and returns a vector of vectors
+//Which has the distances for each node to every other node in the graph
+//It takes a while to run for my selected data set as it has 37000 nodes
+//I used the lecture on BFS for this function and also researched online
+pub fn computeALLBFS(start: usize, adj: &Vec<Vec<usize>>) -> Vec<Vec<Option<u32>>> {
     let mut all_distances: Vec<Vec<Option<u32>>> = Vec::new();
-
-    for start_vertex in 0..adjacency_lists.len() {
-        let mut distance: Vec<Option<u32>> = vec![None; adjacency_lists.len()];
+    for start_vertex in 0..adj.len() {
+        let mut distance: Vec<Option<u32>> = vec![None; adj.len()];
         distance[start_vertex] = Some(0); // <= we know this distance
         let mut queue: VecDeque<usize> = VecDeque::new();
         queue.push_back(start_vertex);
 
-        while let Some(v) = queue.pop_front() {
-            // new unprocessed vertex
-            for &u in &adjacency_lists[v] {
-                if distance[u].is_none() {
-                    // consider all unprocessed neighbors of v
-                    distance[u] = Some(distance[v].unwrap() + 1);
-                    queue.push_back(u);
+        while let Some(vertex) = queue.pop_front() {
+            for &current in &adj[vertex] {
+                if distance[current].is_none() {
+                    distance[current] = Some(distance[vertex].unwrap() + 1);
+                    queue.push_back(current);
                 }
             }
         }
         
         all_distances.push(distance);
+        //I used this line while testing to make sure that the program was actaully running
         println!("{}",start_vertex);
     }
 
     all_distances
 }
-
-pub fn printBFS(distances: &[Vec<Option<u32>>]) {
+//This function prints ALL the BFS's for each node. IT takes a while to run 
+//I seperated the function computeALLBFS and printALLBFS because running them together took too long and gave my computer issues
+//I used the lecture on BFS for this function and also researched online
+pub fn printALLBFS(distances: &[Vec<Option<u32>>]) {
     for (start_vertex, distances) in distances.iter().enumerate() {
         print!("BFS for node {}: ", start_vertex);
         for (v, dist) in distances.iter().enumerate() {
-            print!("{}:{} ", v, dist.unwrap_or_default());
+            print!("{}:{} ", v, dist.unwrap());
         }
         println!();
     }
+}
+
+pub fn average_path_length(all_distances: &Vec<Vec<Option<u32>>>) -> f64 {
+    let mut sum_distances = 0;
+    let mut count_valid_distances = 0;
+
+    for distances in all_distances.iter() {
+        for &distance in distances.iter() {
+            if let Some(d) = distance {
+                sum_distances += d as usize;
+                count_valid_distances += 1;
+            }
+        }
+    }
+
+    return sum_distances as f64 / count_valid_distances as f64;
+    // if count_valid_distances > 0 {
+    //     return sum_distances as f64 / count_valid_distances as f64
+    // } else {
+    //     return 0.0 
+    // }
+}
+
+
+
+
+
+
+
+
+
+
+//This function does a BFS to find distances for any node up to any node
+//Meaning if the input is start: 10 and lastnode = 100, then it will tell the shortest connections for node 10
+// From node 0 to node 100
+pub fn oneBFS(start: usize, lastnode: usize, adj: &Vec<Vec<usize>>) {
+    let mut distance: Vec<Option<u32>> = vec![None; adj.len()];
+    distance[start] = Some(0); // <= we know this distance
+    let mut queue: VecDeque<usize> = VecDeque::new();
+    queue.push_back(start);
+    while let Some(vertex) = queue.pop_front() {
+        // new unprocessed vertex
+        for &current in &adj[vertex] {
+            if distance[current].is_none() {
+                // consider all unprocessed neighbors of v
+                distance[current] = Some(distance[vertex].unwrap() + 1);
+                queue.push_back(current);
+            }
+        }
+    }
+    print!("BFS for node {} (from 0 up to node {}): ", start, lastnode);
+    for (node, dist) in distance.iter().enumerate().take(lastnode + 1) {
+        print!("{}:{} ", node, dist.unwrap());
+    }
+    println!();
 }
