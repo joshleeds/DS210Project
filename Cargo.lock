@@ -3,7 +3,7 @@
 version = 3
 
 [[package]]
-name = "DS210Homework10"
+name = "DS210Project"
 version = "0.1.0"
 dependencies = [
  "rand",
