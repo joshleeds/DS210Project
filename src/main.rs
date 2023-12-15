@@ -2,12 +2,14 @@ use std::io::{BufRead, BufReader};
 use std::fs::File;
 
 mod adjacencylist;
+mod graphsearch;
+mod analysis;
+
 use adjacencylist::{create_adjacency_list, print_adjacency_list};
 
-mod graph_analysis;
-use graph_analysis::{printALLBFS, computeALLBFS, oneBFS, average_path_length};
+use graphsearch::{printALLBFS, computeALLBFS, oneBFS};
 
-
+use analysis::{average_path_length};
 
 fn main() {
     let graph = reader("githubdata.csv");
@@ -29,7 +31,8 @@ fn main() {
     // oneBFS(node, length, &adj);
 
     let distances = computeALLBFS(0, &adj); // THIS TAKES ABOUT 8 min to run
-    //printALLBFS(&distances); //Prints ALL the distances
+    //printALLBFS(&distances); //Prints ALL the distances //If uncommented and ran this code take over 15 minutes to run and caused my computer
+    //Memory Issues
     let pathlength = average_path_length(&distances);
     println!("Average Path Length: {}", pathlength);
 }

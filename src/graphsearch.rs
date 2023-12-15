@@ -52,27 +52,6 @@ pub fn printALLBFS(distances: &[Vec<Option<u32>>]) {
     }
 }
 
-pub fn average_path_length(all_distances: &Vec<Vec<Option<u32>>>) -> f64 {
-    let mut sum_distances = 0;
-    let mut count_valid_distances = 0;
-
-    for distances in all_distances.iter() {
-        for &distance in distances.iter() {
-            if let Some(d) = distance {
-                sum_distances += d as usize;
-                count_valid_distances += 1;
-            }
-        }
-    }
-
-    return sum_distances as f64 / count_valid_distances as f64;
-    // if count_valid_distances > 0 {
-    //     return sum_distances as f64 / count_valid_distances as f64
-    // } else {
-    //     return 0.0 
-    // }
-}
-
 
 //This function does a BFS to find distances for any node up to any node
 //Meaning if the input is start: 10 and lastnode = 100, then it will tell the shortest connections for node 10
