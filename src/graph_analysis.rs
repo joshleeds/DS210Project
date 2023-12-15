@@ -10,16 +10,6 @@ use std::collections::VecDeque;
 //     return (nodes, edges)
 // }
 
-pub fn create_adjacency_list(graph: Vec<(usize, usize)>) -> Vec<Vec<usize>> {
-    let length = graph.iter().map(|&(node, edge)| node.max(edge)).max().unwrap_or(0) + 1; //Used the internet to get the correct length
-    let mut Adj : Vec<Vec<usize>> = vec![vec![];length];
-
-    for &(node, edge) in &graph {
-        Adj[node].push(edge);
-        Adj[edge].push(node);  
-    }
-    return Adj
-}
 
 //This function computes a BFS for each node in the graph and returns a vector of vectors
 //Which has the distances for each node to every other node in the graph
@@ -82,14 +72,6 @@ pub fn average_path_length(all_distances: &Vec<Vec<Option<u32>>>) -> f64 {
     //     return 0.0 
     // }
 }
-
-
-
-
-
-
-
-
 
 
 //This function does a BFS to find distances for any node up to any node
