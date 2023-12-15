@@ -9,7 +9,7 @@ use adjacencylist::{create_adjacency_list, print_adjacency_list};
 
 use graphsearch::{printALLBFS, computeALLBFS, oneBFS};
 
-use analysis::{average_path_length};
+use analysis::{average_path_length, furthest};
 
 fn main() {
     let graph = reader("githubdata.csv");
@@ -22,8 +22,8 @@ fn main() {
     //     compute_print_all_BFS(i, &adj);
     // }
     
-    let node = 60;
-    let finalnode = 200;
+    let node = 0;
+    let finalnode = 10;
     let length = adj.len();
     oneBFS(node, finalnode, &adj);
     //This line prints the BFS for the selected node for all nodes. uncomment this line to print all of them
@@ -31,11 +31,22 @@ fn main() {
     // oneBFS(node, length, &adj);
 
     let distances = computeALLBFS(0, &adj); // THIS TAKES ABOUT 8 min to run
-    //printALLBFS(&distances); //Prints ALL the distances //If uncommented and ran this code take over 15 minutes to run and caused my computer
-    //Memory Issues
+    // //printALLBFS(&distances); //Prints ALL the distances //If uncommented and ran this code take over 15 minutes to run and caused my computer
+    // //Memory Issues
+
     let pathlength = average_path_length(&distances);
     println!("Average Path Length: {}", pathlength);
+
+    let furthest_nodes = furthest(&distances);
+    println!("Nodes with the maximum distance are ");
+    for (node1, node2, furthestdistance) in furthest_nodes {
+        println!("({}, {}) with distance {}", node1, node2, furthestdistance);
+    }
 }
+
+
+
+
 
 //Reads the graph
 fn reader(path: &str) -> Vec<(usize, usize)> {

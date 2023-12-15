@@ -33,8 +33,8 @@ pub fn computeALLBFS(start: usize, adj: &Vec<Vec<usize>>) -> Vec<Vec<Option<u32>
         }
         
         all_distances.push(distance);
-        //I used this line while testing to make sure that the program was actaully running
-        println!("{}",start_vertex);
+        
+        println!("{}",start_vertex);  //I added this line so the user can know when the BFS's are almost done (when the number reaches 37000)
     }
 
     all_distances
