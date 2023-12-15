@@ -6,47 +6,52 @@ mod graphsearch;
 mod analysis;
 
 use adjacencylist::{create_adjacency_list, print_adjacency_list};
-
 use graphsearch::{printALLBFS, computeALLBFS, oneBFS};
-
-use analysis::{average_path_length, furthest};
+use analysis::{average_distance, furthest, degree_distribution};
 
 fn main() {
+    //Reads the graph and creates and adjacency list
     let graph = reader("githubdata.csv");
     let adj = create_adjacency_list(graph);
 
-    //This prints the adjacency list for the graph
-    // print_adjacency_list(&adj);
-    // for i in 0..1{//adj.len() {
-    //     println!("Distances from node {}", i);
-    //     compute_print_all_BFS(i, &adj);
-    // }
+    //This prints the adjacency list for the graph Uncomment it to see the whole adjacency list - I commeneted it out because it is fairly large
+    //print_adjacency_list(&adj);
     
-    let node = 0;
-    let finalnode = 10;
+    
+    //This does a BFS for a selected node and prints out the distances from node 0 to node "finalnode" for the selected node
+    let node = 7285;
+    let finalnode = 1000;
     let length = adj.len();
     oneBFS(node, finalnode, &adj);
+
     //This line prints the BFS for the selected node for all nodes. uncomment this line to print all of them
     //I commeneted this line out since their are 370000 nodes and therefor printing the BFS for all of them isnt particuarly helpful
     // oneBFS(node, length, &adj);
+    
+    //This does a BFS to calculate distances between every node
+    // THIS TAKES ABOUT 8 min to run
+    let distances = computeALLBFS( &adj); 
 
-    let distances = computeALLBFS(0, &adj); // THIS TAKES ABOUT 8 min to run
-    // //printALLBFS(&distances); //Prints ALL the distances //If uncommented and ran this code take over 15 minutes to run and caused my computer
-    // //Memory Issues
+    //printALLBFS(&distances); 
+    //Prints ALL the distances If uncommented and ran this code take over 15 minutes to run and caused my computer
+    //Memory Issues
 
-    let pathlength = average_path_length(&distances);
-    println!("Average Path Length: {}", pathlength);
+    //Calculates the average distances
+    let averagedistance = average_distance(&distances);
+    println!("Average Path Length: {}", averagedistance);
 
     let furthest_nodes = furthest(&distances);
     println!("Nodes with the maximum distance are ");
     for (node1, node2, furthestdistance) in furthest_nodes {
         println!("({}, {}) with distance {}", node1, node2, furthestdistance);
     }
+
+    for target_distance in 1..=6 {
+        // Calculate and print the percentage of nodes at the current distance
+        let percentage = degree_distribution(&distances, target_distance);
+        println!("Percentage of nodes at distance {}: {:.2}%", target_distance, percentage);
+    }
 }
-
-
-
-
 
 //Reads the graph
 fn reader(path: &str) -> Vec<(usize, usize)> {
@@ -64,3 +69,26 @@ fn reader(path: &str) -> Vec<(usize, usize)> {
 }
 
 
+#[test]
+fn average_distancetest(){
+    //Test that the average_distance function works
+    let graph: Vec<(usize, usize)> = vec![(0, 1),(0, 2),(1,2),(2, 3),(2,4),(3, 4),(4,5),(1,6)]; //I got this graph from a lecture
+    let adj = create_adjacency_list(graph);
+    let distances = computeALLBFS(&adj);
+    let avg = average_distance(&distances);
+    let actaul = 1.538; //I got this number by drawing out the graph and calculating the average by hand
+    println!("{}", avg);
+    let difference = (avg-actaul).abs();
+    assert!(difference > 0.001);
+}
+#[test]
+fn distancetest(){
+    //Tests the furthest function to make sure the current furtherst distance is calculated 
+    let graph: Vec<(usize, usize)> = vec![(0, 1),(0, 2),(1,2),(2, 3),(2,4),(3, 4),(4,5),(1,6)];
+    let adj = create_adjacency_list(graph);
+    let distances = computeALLBFS(&adj);
+    let furthest = furthest(&distances);
+    //Calculated true furthest distance
+    let truefurthest: Vec<(usize, usize, u32)> = vec![(5, 6, 4), (6, 5, 4)];
+    assert_eq!(furthest, truefurthest);
+}

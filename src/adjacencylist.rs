@@ -16,9 +16,4 @@ pub fn print_adjacency_list(adjacency_lists: &Vec<Vec<usize>>) {
     for (node, neighbors) in adjacency_lists.iter().enumerate() {
         println!("Node {}: {:?}", node, neighbors);
     }
-    //If you want to print the first x number of nodes enter a number in the .take() and uncomment this out and 
-    //comment the first for loop out
-    // for (node, neighbors) in adjacency_lists.iter().enumerate().take(//ENTER NUMBER) {
-    //     println!("Node {}: {:?}", node, neighbors);
-    // }
 }
