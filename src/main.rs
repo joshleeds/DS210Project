@@ -19,8 +19,8 @@ fn main() {
     
     
     //This does a BFS for a selected node and prints out the distances from node 0 to node "finalnode" for the selected node
-    let node = 7285;
-    let finalnode = 1000;
+    let node = 10;
+    let finalnode = 145;
     let length = adj.len();
     oneBFS(node, finalnode, &adj);
 
@@ -38,15 +38,16 @@ fn main() {
 
     //Calculates the average distances
     let averagedistance = average_distance(&distances);
-    println!("Average Path Length: {}", averagedistance);
+    println!("Average Distance: {}", averagedistance);
 
+    //Calculated the furthest nodes in terms of degrees of seperation away from each other
     let furthest_nodes = furthest(&distances);
     println!("Nodes with the maximum distance are ");
     for (node1, node2, furthestdistance) in furthest_nodes {
-        println!("({}, {}) with distance {}", node1, node2, furthestdistance);
+        println!("node {}, node {} with distance {}", node1, node2, furthestdistance);
     }
 
-    for target_distance in 1..=6 {
+    for target_distance in 1..=7 {
         // Calculate and print the percentage of nodes at the current distance
         let percentage = degree_distribution(&distances, target_distance);
         println!("Percentage of nodes at distance {}: {:.2}%", target_distance, percentage);
