@@ -47,10 +47,11 @@ fn main() {
         println!("node {}, node {} with distance {}", node1, node2, furthestdistance);
     }
 
-    for target_distance in 1..=7 {
+    //Calculates the percentage for node 1 - 7
+    for target_degree in 1..=7 {
         // Calculate and print the percentage of nodes at the current distance
-        let percentage = degree_distribution(&distances, target_distance);
-        println!("Percentage of nodes at distance {}: {:.2}%", target_distance, percentage);
+        let percentage = degree_distribution(&distances, target_degree);
+        println!("Percentage of nodes at distance {}: {:.2}%", target_degree, percentage);
     }
 }
 

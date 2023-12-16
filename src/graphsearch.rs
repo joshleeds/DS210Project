@@ -28,8 +28,8 @@ pub fn computeALLBFS(adj: &Vec<Vec<usize>>) -> Vec<Vec<Option<u32>>> {
 //I seperated the function computeALLBFS and printALLBFS because running them together took too long and gave my computer issues
 //I used the lecture on BFS for this function and also researched online
 pub fn printALLBFS(distances: &[Vec<Option<u32>>]) {
-    for (start_vertex, distances) in distances.iter().enumerate() {
-        print!("BFS for node {}: ", start_vertex);
+    for (current_node, distances) in distances.iter().enumerate() {
+        print!("BFS for node {}: ", current_node);
         for (v, dist) in distances.iter().enumerate() {
             print!("{}:{} ", v, dist.unwrap());
         }
@@ -45,10 +45,10 @@ pub fn oneBFS(selected: usize, lastnode: usize, adj: &Vec<Vec<usize>>) {
     distance[selected] = Some(0); //VS code Rust compilior told me to do the Some(0)
     let mut queue: VecDeque<usize> = VecDeque::new();
     queue.push_back(selected);
-    while let Some(vertex) = queue.pop_front() {
-        for &current in &adj[vertex] {
+    while let Some(node) = queue.pop_front() {
+        for &current in &adj[node] {
             if distance[current].is_none() {
-                distance[current] = Some(distance[vertex].unwrap() + 1);
+                distance[current] = Some(distance[node].unwrap() + 1);
                 queue.push_back(current);
             }
         }
